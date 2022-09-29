@@ -128,7 +128,8 @@ func (u *UserServer) UpdateUser(ctx context.Context, info *proto.UpdateUserInfo)
 	//TODO 用户服务_用户个人中心信息更新
 	//首先进行用户查询
 	var user model.User
-	reslut := global.DB.First(&user, info.Id)
+	user.ID = info.Id
+	reslut := global.DB.First(&user)
 	if reslut.RowsAffected == 0 {
 		return nil, status.Errorf(codes.NotFound, "用户不存在")
 	}
@@ -137,11 +138,14 @@ func (u *UserServer) UpdateUser(ctx context.Context, info *proto.UpdateUserInfo)
 	user.NickName = info.NickName
 	user.Birthday = &birthDay
 	user.Gender = info.Gender
-	reslut = global.DB.Save(user)
+	reslut = global.DB.Save(&user)
 	if reslut.Error != nil {
 		return nil, status.Errorf(codes.Internal, reslut.Error.Error())
 	}
-	return nil, nil
+	/**
+	这里需要注意不能直接返回nil，要使用对应的结构体
+	*/
+	return &proto.Empty{}, nil
 }
 
 func (u *UserServer) CheckPassword(ctx context.Context, info *proto.PasswordCheckInfo) (*proto.CheckReponse, error) {
