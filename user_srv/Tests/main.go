@@ -29,7 +29,7 @@ func GetUserList() {
 	}
 	for _, v := range list.Data {
 		password, err := userClient.CheckPassword(context.Background(), &proto.PasswordCheckInfo{
-			Password:         "generic password",
+			Password:         "df ",
 			EncrytedPassword: v.Password,
 		})
 		if err != nil {

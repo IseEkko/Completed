@@ -111,7 +111,8 @@ func (u *UserServer) CreateUser(ctx context.Context, userinfo *proto.CreateUseri
 	user.NickName = userinfo.NickName
 	//密码加密
 	options := &password.Options{16, 100, 32, md5.New}
-	salt, encodedPwd := password.Encode("generic password", options)
+	//"generic password"
+	salt, encodedPwd := password.Encode(userinfo.PassWord, options)
 	//这里使用的是$进行分割，对后面验证的时候使用$进行取出
 	user.Password = fmt.Sprintf("$pbkdf2-sha512$%s$%s", salt, encodedPwd)
 	//进行创建
